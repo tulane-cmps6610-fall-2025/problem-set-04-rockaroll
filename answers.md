@@ -89,8 +89,8 @@ minheap(A) ={
 
 Here the work can be evaluated in the following way:
 W(n) = sum of (number of nodes at level-h * Work done per node)
-     = $\sum_{i=0} ^ \log_{2}n (n/2^i) * i $
-     = $ n* \sum_{i=0} ^ \log_{2}n (i/2^i)$ = O(n)
+     = $\sum_{i=0} ^{\log_{2}n} (n/2^i) * i $
+     = $ n* \sum_{i=0} ^{\log_{2}n} (i/2^i)$ = O(n)
 
 - **2b.**
 As each comparison is now done in parallel the span to make a comparison and swap happen between two nodes = $\log n$
@@ -163,9 +163,9 @@ The algorithm consists of two parts:
 1. Conversion of Integer into binary representation:
 Here we are dividing N by 2 and storing the results of the remainder so (N%2). So therefore our work(W(N)) and span(S(N)) are given by:
 
-   W(N) = W(N/2) + 1 = $\sum_{i=0} ^ \log_{2} n (1)$ = O($\log n$)
+   W(N) = W(N/2) + 1 = $\sum_{i=0}^{\log_{2}n} (1)$ = O($\log n$)
    
-   S(N) = S(N/2) + 1 = $\sum_{i=0} ^ \log_{2} n (1)$ = O($\log n$)
+   S(N) = S(N/2) + 1 = $\sum_{i=0} ^{\log_{2}n} (1)$ = O($\log n$)
    
 Here the division is done sequentially so no parallelism hence W(N) = S(N) 
 
@@ -176,6 +176,7 @@ Here due to the nature of the part-1 and the fact that we are only dividing our 
 Therefore to scan each digit of the binary string the work and span = O($\log n$)
 
 Total Work  = Work Of Part-1 + Work Of Part-2 = $\log n + \log n$ = O($\log n$)
+
 Total Span = Span Of Part-1 + Span Of Part-2 = $\log n + \log n$ = O($\log n$)
 
 

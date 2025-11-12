@@ -118,6 +118,7 @@ S(n) = number of levels * span of comparison = $\log n * \log n $
 S(n) = O($(\log n)^2$)
 
 - **3a.**
+  
 My algorithm to solve this involves the following steps:
 1. Convert N into its binary representation by:
 a. repeatedly dividing by 2  
@@ -243,7 +244,9 @@ But this is a contradiction from the initial assumption that S1 is our optimal s
 
 - **4c.**
 Lets assume the input is a number N and N>0 and the set that represents the denominations is D.
+
 Algorithm:
+
 // Initialise a table that will be used to store the results of subproblems
 
 Table=<>
@@ -255,12 +258,16 @@ D=< D0,D2........Dk >
 // Setting up a function to calculate the minimum value
 
 Mincalc(subproblem)={
+
                 min(min_val,1+subproblem) if subproblem!= Positive_int_max
+                
                 Positive_int_max        else
 }
 
 // Algorithimic specification to find minimum number of coins to solve the problem given a denomination
+
 Denomsolve(N){
+
    // Base Cases
    
    if N=0{

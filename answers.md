@@ -1,7 +1,7 @@
 # CMPS 6610 Problem Set 04
 ## Answers
 
-**Name:**_________________________
+**Name:**Pavan Kumar Sanjay
 
 
 Place all written answers from `problemset-04.md` here for easier grading.
@@ -13,63 +13,321 @@ Place all written answers from `problemset-04.md` here for easier grading.
 
 File | Fixed-Length Coding | Huffman Coding | Huffman vs. Fixed-Length
 ----------------------------------------------------------------------
-f1.txt    |                     |                |
-alice29.txt    |                     |                |
-asyoulik.txt    |                     |                |
-grammar.lsp    |                     |                |
-fields.c    |                     |                |
+f1.txt    |1340                |826               |0.616418
+alice29.txt    |1039367             |676374          |0.650756
+asyoulik.txt    |876253              |606448          |0.692092
+grammar.lsp    |26047               |17356           |0.666334
+fields.c    |78050              |56206           |0.720128
+
+The consistent trend displayed here is a 61% to 72% decrease in cost of encoding .
 
 
+- **1e.**
 
+When the frequency of the characters in a document are the same. The number of elements(n) is given by the following expression:
 
-- **1d.**
+   n = {
+         $ 2^k  if  n is even $
 
+         $ 2^k + 1 if n is odd $
+   }
 
+Here k is the height of the tree.
+From this we can conclude that $ k \in \log_{2} n$ and the cost of getting the length of the huffman code of a character is at the most the height of the tree i.e k.
+Based on this:
 
+  Cost of Huffman Encoding = F x $ \sum C(i) $  here i ranges from 1 to n and F is the frequency for every charecter
 
-
+                           = F x  [nlogn]
+                           = Fnlogn
 - **2a.**
+Method
+To build a binary-min heap from an array in O(n) time the following steps will be considered:
+1. Initialise the array which is implicitly represented as binary tree
+2. Ensure that the min-heap property i.e value of a node < value of child node1 and value of child node2. This will be done by performing comparison from the lowest level of the trees to the root.
 
+Also on our array being a binary tree the following properties will apply:
+(i) If node_index = x (for any index) and if two child nodes exist then child1_index = 2x + 1 and child2_index = 2x + 2  ----(1)
+(ii) To prove a node x is a leaf node (a node with no children) then the index of its left child will be greater than the total number of elements i.e:
+     2x+1 >= n
+Hence x>=$ \floor n-1/2$ -----(2) 
 
+Algorithminc Representation:
+minheap(A) ={
+    // Here we are assuming A is the representation of our binary tree and our input  with n elements
+    n = size of A = length(A)
+    starting_position = $ \floor n-1/2 $ // from ---(2)
+    for i from starting position to 0: (iterate from the last level to the root node level)
+    {
+        c=i // c is our current node
+        // Here this is the procedure through which we can enforce the heap property
+        While(c is valid){
+          // From property-1
+          smallest_node_index=c
+          left_child_index=2c + 1
+          right_child_index=2c + 2
+          // Checking if the index exists and the value of left_child is lesser than the smallest_node
+          if left_child_index < n and A[left_child_index] < A[smallest_node_index]{
+              smallest_node_index = left_child_index
+          }
+          // Similar to previous condition
+           if right_child_index < n and A[right_child_index] < A[smallest_node_index]{
+              smallest_node_index = right_child_index
+          }
+          // If the smallest_node
+          if( smallest_node_index != i){
+             // Swapping two different nodes to enforce the heap property
+             A[c],A[smallest_node_index] = A[smallest_node_index],A[c]
+             c=smallest_node_index
+          }
+          else{
+              //Terminate Execution
+          }
+        }
+    }
+}.
 
+Here the work can be evaluated in the following way:
+W(n) = sum of (number of nodes at level-h * Work done per node)
+     = $\sum_{i=0} ^ \log_{2}n (n/2^i) * i $
+     = $ n* \sum_{i=0} ^ \log_{2}n (i/2^i)$ = O(n)
 
 - **2b.**
-
-
-
+As each comparison is now done in parallel the span to make a comparison and swap happen between two nodes = $\log n$
+This means:
+S(n) = number of levels * span of comparison = $\log n * \log n $
+S(n) = O($(\log n)^2$)
 
 - **3a.**
+My algorithm to solve this involves the following steps:
+1. Convert N into its binary representation by:
+a. repeatedly dividing by 2  
+b. concatenating the remainder of each division(N%2)
+c. reversing the binary string to get the binary/ base-2 representation
+2. Retrieve the indexes of the bits which are 1 in these binary representations
+3. Return a sequence of the denominations which is basically $2^each_retrieved_index_one_by_one$
 
-
+Example:
+Assume N = 100:
+Convert N into a binary string $(100) = (1100100)$
+Indexes with 1's are:<2,5,6>
+Denominations=$<2^2,2^5,2^6>$ // Here $2^2 + 2^5 + 2^6 = 100$
 
 - **3b.**
 
+Greedy Choice:
+The greedy choice for this algorithm is picking the largest denoimnation of {2^0,2^1.....2^k} such that the largest denomination <= N. This means if we assume the largest denomination is x=2^i. Then the greedy propety dictates that x<=N.
 
+Proof:
+Lets assume that N is our input number and the representation of N as a power of 2 generated by the greedy algorithm is given by:
+   $G ={2^i1,2^i2,2^i3.........2^ip}$
 
+Similarly lets assume an optimal represntation N as a power of 2 given by O:
+   $O = {2^l1,2^l2,2^l3.........2^lp}$
+ 
+
+Here $2^k$ is assumed to be the largest denomination and upholds the choice that $2^k<=N$.
+This means that $N<2^(k+1)$. $2^k$ is present in G. Meanwhile lets assume that the O does not contain $2^k$.
+
+So this restricts summing up the elements of set O to a value lesser than $2^k$:
+
+  Sum = $\sum_{j=0} ^(k-1) 2^j = 2^(k-1) - 1 = 2^(k-1)$(Considering only the dominant term)
+
+Here the Sum<$2^k$ this proves that O is not a possible solution and G our greedy represntation is our optimal solution.
+
+Optimal Substructure property:
+The optimal substructre of N can be formed in this case only if it is represented as a subproblem of $\floor N/2$.
+
+Proof:
+So in this proof let us assume N is our input. N can be written in the following way in its optimal form:
+
+->N = $\sum_{i=0} ^k b[i]*(2^i)$ ----(1)[Here k is the length of the binary string b and b[i] is each individual bit]
+
+The algorithms begins with dividing our input by 2 and storing the remainder of the division so:
+-> N = 2*N1 + bs (Here N1=$\floor N/2$ and bs = 1 (to accomade the base case))
+
+Let us assume that there exists a sub problem N2 that is more optimal then the N1. N2 is represented by:
+-> N2 = $\sum_{j=0} ^(k-1) c[j]*(2^j)$ (Here k-1 is the length of the binary string c and c[i] is each individual bit)
+   
+-> N = 2*N2 + bs
+     = 2*($\sum_{j=0} ^(k-1) c[j]*(2^j)$) + bs
+     = $\sum_{j=0} ^(k-1) c[j]*(2^(j+1))$ + bs
+Here let i=j+1 (adjusting the index):
+   N  = $\sum_{i=0} ^(k) c[i-1]*(2^i)$ + bs ----(2)
+
+From (1) and (2) we have two unique representations of N which is not possible as every number as unique binary representation. Therefore the equations in (1) and (2) are identical and they are the same representation. Hence proving the substructure is optimal.
 
 - **3c.**
 
+The algorithm consists of two parts:
+1. Conversion of Integer into binary representation:
+Here we are dividing N by 2 and storing the results of the remainder so (N%2). So therefore our work(W(N)) and span(S(N)) are given by:   
+   W(N) = W(N/2) + 1 = $\sum_{i=0} ^ \log_{2} n (1)$ = O($\log n$)
+   S(N) = S(N/2) + 1 = $\sum_{i=0} ^ \log_{2} n (1)$ = O($\log n$)
+Here the division is done sequentially so no parallelism hence W(N) = S(N) 
+
+2. Scanning Digits which are 1 in the binary representation to get indexes and denominations:
+Here due to the nature of the part-1 and the fact that we are only dividing our problem into only one subproblem of half the input size and storing the remainder of each division.
+
+   Length of binary string = Height of the recursive tree = $\log n$ (approximately)
+Therefore to scan each digit of the binary string the work and span = O($\log n$)
+
+Total Work  = Work Of Part-1 + Work Of Part-2 = $\log n + \log n$ = O($\log n$)
+Total Span = Span Of Part-1 + Span Of Part-2 = $\log n + \log n$ = O($\log n$)
 
 
 - **4a.**
+Let us assume that N=23 as our counterexample and run the previous algorithm:
+Convert N into a binary string $(23) = (10111)$
+Indexes with 1's are:<0,1,2,4>
+So based on our results the denominations should be D0,D1,D2,D4. However the question states that the Denominations are arbitary and only D0,D2 and Dk are confirmed to exist.
 
-
+This proves that the algorithm designed earlier in question-2 will not work here.
 
 - **4b.**
 
+Optimal Substructure property:
+The optimal sub structure property  here is that the problem can be by combining the results of smaller subproblems. These subproblems arise from performing S = N - {Value of each denomination} = N - {D0,D2,...........Dk}.
 
+Proof:
+
+Assuming one specific coin Dx is part of the optimal solution S1 and our input is N. The remianing coins would be N-Dx which would belong to S2(our remaining coinset).
+
+ S1 = {Dx} U S2
+|S1| =|S2| + 1 ----(1)
+
+Lets assume that S2 is not optimal and that there exists a different set of remaining coints T that sums up to Dx but uses lesser number of coins than S2.
+
+|T|<|S2|
+
+Then:
+Snew = {Dx} U T
+|Snew| = |T|+1  ----(2)
+
+So now:
+  |S2| + 1 > |T| + 1
+  |S1| > |Snew|
+
+But this is a contradiction from the initial assumption that S1 is our optimal solution. Therefore for S1 to be optimal S2 has to be the optimal number of remaining coins proving our optimal substructure property. 
 
 
 - **4c.**
+Lets assume the input is a number N and N>0 and the set that represents the denominations is D.
+Algorithm:
+// Initialise a table that will be used to store the results of subproblems
+Table=<>
+// Arbitary set of denominations
+D=< D0,D2........Dk > 
+// Setting up a function to calculate the minimum value
+Mincalc(subproblem)={
+                min(min_val,1+subproblem) if subproblem!= Positive_int_max
+                Positive_int_max        else
+}
+// Algorithimic specification to find minimum number of coins to solve the problem given a denomination
+Denomsolve(N){
+   // Base Cases
+   if N=0{
+     then return 0
+   }
+   if N in Table{
+     then return Table[N]
+   }
+   // If there is no way sum up the change the answer will default to infinity  
+   min_val=Positive_int_max // +Infinity in this case
+   // Iterate through set of denominations
+   for d in the set of D
+    {
+       // The input has to be greater than every denomination chosen 
+       if (N>=d){ 
+          //Solving sub problem
+          subproblem=Denomsolve(N-d)
+          min_val=Mincalc(subproblem)
+       }
+     }
+   // memoisation
+   Table[N] = min_val
+   // Will eventually return the minimum number of coins required
+   return min_val
+}
 
+Work Calculation:
+-> Within this algorithm at there is the worst case scenario of solving N-different subproblems at least once and storing the results.
+-> Assuming there are k-denominations over which each of the subproblems are evaluated the cost is O(k).
+
+Total Work Done = O(N*k)
+Span Calculation:
+-> Here these N-different subproblems in the worst case will still be sequentially.
+-> However they will be solved over k-denominations in parallel which the means the cost of doing this is O(1)
+
+Total Span = O(N)
 
 - **5a.**
+Yes the optimal substructure property holds for weighted task selection. This is because the optimal solution can be constructed from subsolutions. This can proved with contradiction.
+Proof:
+Assume the optimal solution is S that uses the suboptimal solution S1 for a subproblem. 
 
+S = S1 U Sr (Here Sr is the remaining tasks)
+
+Here lets assume there is another suboptimal solution M for the same subproblem such that value of M > value of T.
+
+Snew = M U Sr
+
+Then value of Snew > value of S but this is contradictory as S is the optimal solution. This proves the optimal substructure property by contradiction/
 
 
 - **5b.**
+No the greedy choice that involves choosing the tasks which finish the earliest does hold for weighted task selection. This cannot be proved but two counter examples are as follows:
 
+Assume task representation=(si,fi,vi)
+A=(0,9,20) B=(9,13,20) C=(0,15,50)
+-> Here based on the fi which finishing time the combination of Task A + Task B should be optimal however their total value comes up to 40 while Task C is optimal as its value is 50.
 
-
+K=(0,14,150) F=(0,6,70) M=(1,13,50)
+-> Here based on the fi which finishing time the combination of Task F + Task M should be optimal however their total value comes up to 120 while Task K is optimal as its value is 150.
 
 - **5c.**
+Algorithm Specification:
+// Input is A which is array of tasks
+function WeigthedIntervalScheduling(A){
+    //Sorting tasks based on finish time
+    A=sorted(A)
+    n=length(A)
+    P=array of size n //stores last compatible task or task that completed before task i
+    P=findcompatibletasks(A)={  return index for every task in A that completes before task i
+                                 return -1     else}
+    // Create table to store results of each subproblem which is max value of first i tasks
+    Dmax = array size n+1
+    Dmax[0]= 0
+    for i from 1 to n{
+    //Case-1->Take i-1th task here if we consider this then any task that overlaps cannot be    considered
+    take_task=A[i-1].val+DP[P[i-1] + 1]
+        
+    //Case-2->Do not take i-1th task as the task has no value and other tasks before give more value
+    skip_task=Dmax[i-1]
+
+    //Choosing the best result
+    Dmax[i] = max(take_val,skip_val)
+    }
+    return Dmax[n]
+}
+
+Work and Span analysis:
+-> Preprocessing:
+This stage involves sorting the tasks based on finishing time an making an array of all compatible tasks for a spceific task. Work and span respectively are given by:
+
+Wa(n) = 2Wa(n/2) + n = $\sum_{i=0} ^{\log_{2} n} n = O(n\log n)$
+
+Sa(n) = Sa(n/2) + log n (Merging factor for parallel merge sort is log n)
+      = $\sum_{i=0} ^{\log_{2} n} log (n/2^i) = O((\log n)^2)$
+
+-> Dynamic Programming Calculations:
+The cost of performing additions, calculating the maximum of two values and inserting new values within the table.As this part of the process is sequential due to the dependies on previous outputs used within the dynamic table the recurrences are:
+
+Wb(n) = Wb(n-1) + 1 = 1 + n - 1 = O(n)
+
+Sb(n) = Sb(n-1) + 1 = 1 + n - 1 = O(n)
+
+
+So now:
+Total work = Wa(n) + Wb(n) = $O(n\log n) + O(n) = O(n\log n)$
+Total span = Sa(n) + Sb(n) = $O((\log n)^2) + O(n) = O(n)$

@@ -161,12 +161,15 @@ From (1) and (2) we have two unique representations of N which is not possible a
 
 The algorithm consists of two parts:
 1. Conversion of Integer into binary representation:
-Here we are dividing N by 2 and storing the results of the remainder so (N%2). So therefore our work(W(N)) and span(S(N)) are given by:   
+Here we are dividing N by 2 and storing the results of the remainder so (N%2). So therefore our work(W(N)) and span(S(N)) are given by:
+
    W(N) = W(N/2) + 1 = $\sum_{i=0} ^ \log_{2} n (1)$ = O($\log n$)
+   
    S(N) = S(N/2) + 1 = $\sum_{i=0} ^ \log_{2} n (1)$ = O($\log n$)
+   
 Here the division is done sequentially so no parallelism hence W(N) = S(N) 
 
-2. Scanning Digits which are 1 in the binary representation to get indexes and denominations:
+3. Scanning Digits which are 1 in the binary representation to get indexes and denominations:
 Here due to the nature of the part-1 and the fact that we are only dividing our problem into only one subproblem of half the input size and storing the remainder of each division.
 
    Length of binary string = Height of the recursive tree = $\log n$ (approximately)
